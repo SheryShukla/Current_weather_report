@@ -1,0 +1,51 @@
+import requests
+import tkinter as tk
+from tkinter import messagebox
+
+
+# Function to fetch weather data
+def get_weather():
+    city = city_entry.get()
+    api_key = "7a02e10c174a3d4d357423e563d115a2"
+    OWN_Endpoint = "https://api.openweathermap.org/data/2.5/weather"
+
+    weather_params = {
+        "q": city,
+        "appid": api_key
+    }
+
+    r = requests.get(OWN_Endpoint, params=weather_params)
+    weather = r.json()
+
+    if r.status_code == 200:
+        weather_description.set("Weather condition = " + weather['weather'][0]['description'])
+        temperature.set("Temperature = " + str(weather['main']['temp']) + " °C")
+    else:
+        messagebox.showerror("Error", "City not found or API request failed.")
+
+
+# Create the main application window
+app = tk.Tk()
+app.title("Weather App")
+app.size()
+
+# Create GUI elements
+city_label = tk.Label(app, text="Enter the name of your city:")
+city_label.pack()
+
+city_entry = tk.Entry(app)
+city_entry.pack()
+
+get_weather_button = tk.Button(app, text="Get Weather", command=get_weather)
+get_weather_button.pack()
+
+weather_description = tk.StringVar()
+weather_label = tk.Label(app, textvariable=weather_description)
+weather_label.pack()
+
+temperature = tk.StringVar()
+temperature_label = tk.Label(app, textvariable=temperature)
+temperature_label.pack()
+
+# Start the GUI application
+app.mainloop()
